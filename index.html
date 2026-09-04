@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>প্রিমিয়াম শপ - অর্ডার করুন</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="bg-indigo-600 text-white py-4 shadow-md text-center">
+    <h1 class="text-2xl font-bold">প্রিমিয়াম কালেকশন</h1>
+    <p class="text-sm">সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা</p>
+  </header>
+
+  <div class="max-w-4xl mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <h2 class="text-xl font-bold mb-4">পণ্য নির্বাচন করুন</h2>
+      <div id="product-container" class="space-y-4"></div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+      <h2 class="text-xl font-bold mb-4 text-indigo-700">অর্ডার কনফার্ম করুন</h2>
+      <form id="orderForm" class="space-y-4">
+        <div class="p-3 bg-indigo-50 rounded-lg text-sm">
+          <p>নির্বাচিত পণ্য: <strong id="selected-product-name">কোনো পণ্য নির্বাচন করা হয়নি</strong></p>
+          <p>মোট মূল্য: <strong id="selected-product-price">০ ৳</strong></p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">আপনার নাম</label>
+          <input type="text" id="name" required placeholder="পুরো নাম লিখুন" class="w-full mt-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">মোবাইল নম্বর</label>
+          <input type="tel" id="phone" required placeholder="017xxxxxxxx" class="w-full mt-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">জেলা নির্বাচন করুন</label>
+          <select id="district" required class="w-full mt-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+            <option value="">জেলা সিলেক্ট করুন</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">থানা / উপজেলা নির্বাচন করুন</label>
+          <select id="thana" required disabled class="w-full mt-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-100">
+            <option value="">আগে জেলা সিলেক্ট করুন</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">সম্পূর্ণ ঠিকানা (বাসা/রোড)</label>
+          <textarea id="address" required placeholder="গ্রাম, রোড বা এলাকার বিস্তারিত নাম" rows="2" class="w-full mt-1 p-2.5 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition">
+          অর্ডার সম্পূর্ণ করুন (ক্যাশ অন ডেলিভারি)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: "স্মার্ট ওয়াচ আল্ট্রা", price: 1850, img: "https://placehold.co/200x150" },
+      { id: 2, name: "ওয়্যারলেস ইয়ারবাডস", price: 1200, img: "https://placehold.co/200x150" },
+      { id: 3, name: "প্রিমিয়াম লেদার ওয়ালেট", price: 850, img: "https://placehold.co/200x150" }
+    ];
+
+    let currentSelection = products[0];
+    const productContainer = document.getElementById('product-container');
+
+    products.forEach((prod, index) => {
+      productContainer.innerHTML += `
+        <div onclick="selectProduct(${prod.id})" class="cursor-pointer border rounded-lg p-3 flex gap-4 items-center bg-white hover:border-indigo-500 transition ${index === 0 ? 'border-indigo-600 ring-2 ring-indigo-200' : ''}" id="prod-card-${prod.id}">
+          <img src="${prod.img}" class="w-16 h-16 rounded object-cover" alt="${prod.name}">
+          <div>
+            <h3 class="font-semibold text-base">${prod.name}</h3>
+            <p class="text-indigo-600 font-bold">${prod.price} ৳</p>
+          </div>
+        </div>
+      `;
+    });
+
+    function selectProduct(id) {
+      currentSelection = products.find(p => p.id === id);
+      document.getElementById('selected-product-name').innerText = currentSelection.name;
+      document.getElementById('selected-product-price').innerText = currentSelection.price + ' ৳';
+
+      products.forEach(p => {
+        const card = document.getElementById(`prod-card-${p.id}`);
+        card.classList.remove('border-indigo-600', 'ring-2', 'ring-indigo-200');
+      });
+      document.getElementById(`prod-card-${id}`).classList.add('border-indigo-600', 'ring-2', 'ring-indigo-200');
+    }
+    selectProduct(1);
+
+    const locationData = {
+      "ঢাকা": ["ধানমন্ডি", "গুলশান", "মিরপুর", "উত্তরা", "সাভার", "কেরানীগঞ্জ"],
+      "চট্টগ্রাম": ["কোতোয়ালী", "পাঁচলাইশ", "পাহাড়তলী", "হালিশহর", "সীতাকুণ্ড"],
+      "সিলেট": ["সিলেট সদর", "বিয়ানীবাজার", "গোলাপগঞ্জ", "শ্রীমঙ্গল"],
+      "রাজশাহী": ["বোয়ালিয়া", "মতিহার", "রাজপাড়া", "পবা"],
+      "ময়মনসিংহ": ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা", "ত্রিশাল", "জামালপুর সদর"]
+    };
+
+    const districtSelect = document.getElementById('district');
+    const thanaSelect = document.getElementById('thana');
+
+    for (let district in locationData) {
+      districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
+    }
+
+    districtSelect.addEventListener('change', function() {
+      const selectedDistrict = this.value;
+      thanaSelect.innerHTML = '<option value="">থানা নির্বাচন করুন</option>';
+
+      if (selectedDistrict && locationData[selectedDistrict]) {
+        thanaSelect.disabled = false;
+        thanaSelect.classList.remove('bg-gray-100');
+
+        locationData[selectedDistrict].forEach(thana => {
+          thanaSelect.innerHTML += `<option value="${thana}">${thana}</option>`;
+        });
+      } else {
+        thanaSelect.disabled = true;
+        thanaSelect.classList.add('bg-gray-100');
+      }
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const orderDetails = {
+        product: currentSelection.name,
+        price: currentSelection.price,
+        customerName: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        district: document.getElementById('district').value,
+        thana: document.getElementById('thana').value,
+        address: document.getElementById('address').value
+      };
+
+      const myWhatsAppNumber = "8801906733000";
+      const message = `*নতুন অর্ডার এসেছে!*%0A%0A` +
+        `পণ্য: ${encodeURIComponent(orderDetails.product)}%0A` +
+        `মূল্য: ${orderDetails.price} টাকা%0A` +
+        `নাম: ${encodeURIComponent(orderDetails.customerName)}%0A` +
+        `ফোন: ${encodeURIComponent(orderDetails.phone)}%0A` +
+        `জেলা: ${encodeURIComponent(orderDetails.district)}%0A` +
+        `থানা: ${encodeURIComponent(orderDetails.thana)}%0A` +
+        `ঠিকানা: ${encodeURIComponent(orderDetails.address)}`;
+
+      const whatsappURL = `https://wa.me/${myWhatsAppNumber}?text=${message}`;
+
+      alert("ধন্যবাদ! আপনার অর্ডারটি নিশ্চিত করতে WhatsApp-এ নিয়ে যাওয়া হচ্ছে...");
+      window.open(whatsappURL, '_blank');
+    });
+  </script>
+</body>
+</html>
